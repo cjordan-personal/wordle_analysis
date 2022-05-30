@@ -43,9 +43,9 @@ An example implementation is provided in example.py.
 ## Scoring:
 Scoring is **very** basic at this point.  Analyzer.score_word(s) will return a score based on the provided optimization settings JSON.  In short - the current scoring algorithm applies a multiplier against letter frequency, letter position, being a noun vs. not, being plural.
 
-This can certainly be more sophisticated by expanding the settings JSON and updating score_word to reflect.
+This can be much more sophisticated by expanding the settings JSON and updating score_word to reflect.
 
-## Game Results
+## Game Results:
 Game.compare_guess_vs_answer will return a JSON object containing the results from a guess against a known answer.  The first element contains "yellow"/partial matches, while the following 5 elements contain specifics about each position.  Example (our guess "ORATE" vs. "CLEAN"):
 ```
 [
