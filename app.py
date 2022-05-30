@@ -1,12 +1,8 @@
 from analyzer import Analyzer, top_result
 import csv
-from datetime import datetime
-from game import Game
-import hashlib
 import json
 import os
 from postgres_engine import Table
-from predictor import PredictorCollection
 import random
 from simulation import WordleSimulation
 
@@ -26,13 +22,12 @@ words_dictionary = load_word_file(file_name=dictionary_file)
 
 table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTGRES_URL_MONTECARLO"])
 
-c = 0
-
 wordle_analyzer = Analyzer(words=words_historical)
 
 while 0 == 0:
     json_values_used = []
     # Loop until we find a permutation that hasn't been used yet.
+    # Not the most efficient, but will be most flexible as more parameters are added.
     while 0 == 0:
         frequency_perc = random.choice([0, 0.25, 0.5, 0.75, 1])
         json_values = {
@@ -46,23 +41,16 @@ while 0 == 0:
             break
 
     starting_word = top_result(wordle_analyzer.score_words(words=words_dictionary, json=json_values))
-    print(starting_word)
+    print("* Starting analysis using starting word '" + starting_word + "' and randomization values:")
+    print(json.dumps(json_values, indent=4))
+
     # Traverse entire historical answer list using one randomization profile.
     for answer in words_historical:
-        wordle_game = Game(answer=answer)
-        wordle_predictors = PredictorCollection(words=words_dictionary)
-        wordle_simulation = WordleSimulation(answer=answer, wordle_game=wordle_game, wordle_analyzer=wordle_analyzer, wordle_predictors=wordle_predictors)
+        wordle_simulation = WordleSimulation(answer=answer, wordle_analyzer=wordle_analyzer, words=words_dictionary)
         current_guess = ""
 
-        json_values["answer"] = answer.lower()
-        for i in range(0, 6):
-            current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess, starting_word=starting_word)
-
-            json_values["guess"] = current_guess
-            json_values["guess_count"] = i + 1
-            json_values["_id"] = hashlib.md5(str(json_values).encode(encoding="utf-8")).hexdigest()
-            json_values["_at"] = str(datetime.utcnow())
-            print(json.dumps(json_values))
-            table.upsert(object=[json_values])
-            if current_guess == wordle_game.answer:
-                break
+        results = wordle_simulation.play_round(json=json_values, starting_word=starting_word)
+        print("\t** Results for '" + answer.lower() + "'...")
+        print(results)
+        print("")
+        table.upsert(object=results)
