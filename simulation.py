@@ -1,16 +1,16 @@
-from analyzer import top_result
+from analyzer import Analyzer, top_result
 from datetime import datetime
 from game import Game
 import hashlib
 from predictor import PredictorCollection
 
 class WordleSimulation:
-    def __init__(self, answer, wordle_analyzer, words):
+    def __init__(self, answer, words):
         self.answer = answer.lower()
         self.wordle_game = Game(answer=answer)
         self.wordle_predictors = PredictorCollection(words=words)
         self.analysis_dictionary = []
-        self.wordle_analyzer = wordle_analyzer
+        self.wordle_analyzer = Analyzer(words=words)
 
     def guess(self, json, current_guess=""):
         guess_result = self.wordle_game.compare_guess_vs_answer(guess=current_guess)

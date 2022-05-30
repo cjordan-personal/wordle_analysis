@@ -46,7 +46,7 @@ while 0 == 0:
 
     # Traverse entire historical answer list using one randomization profile.
     for answer in words_historical:
-        wordle_simulation = WordleSimulation(answer=answer, wordle_analyzer=wordle_analyzer, words=words_dictionary)
+        wordle_simulation = WordleSimulation(answer=answer, words=words_dictionary)
         current_guess = ""
 
         results = wordle_simulation.play_round(json=json_values, starting_word=starting_word)
