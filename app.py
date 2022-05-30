@@ -24,15 +24,6 @@ words_historical = load_word_file(file_name=historical_file)
 dictionary_file = "_input/dictionary.csv"
 words_dictionary = load_word_file(file_name=dictionary_file)
 
-# Randomization
-frequency_perc = random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
-json_values = {
-    "frequency_perc": frequency_perc,
-    "position_perc": 1-frequency_perc,
-    "nonnoun_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1]),
-    "plural_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
-}
-
 table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTGRES_URL_MONTECARLO"])
 
 c = 0
@@ -45,6 +36,15 @@ while 0 == 0:
     wordle_predictors = PredictorCollection(words=words_dictionary)
     wordle_simulation = WordleSimulation(answer=answer, wordle_game=wordle_game, wordle_analyzer=wordle_analyzer, wordle_predictors=wordle_predictors)
     current_guess = ""
+
+    # Randomization
+    frequency_perc = random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
+    json_values = {
+        "frequency_perc": frequency_perc,
+        "position_perc": 1 - frequency_perc,
+        "nonnoun_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1]),
+        "plural_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
+    }
 
     json_values["answer"] = answer
     for i in range(0, 6):
