@@ -1,4 +1,4 @@
-from analyzer import Analyzer
+from analyzer import Analyzer, top_result
 import csv
 from datetime import datetime
 from game import Game
@@ -45,6 +45,8 @@ while 0 == 0:
             json_values_used.append(json_values)
             break
 
+    starting_word = top_result(wordle_analyzer.score_words(words=words_dictionary, json=json_values))
+    print(starting_word)
     # Traverse entire historical answer list using one randomization profile.
     for answer in words_historical:
         wordle_game = Game(answer=answer)
@@ -52,9 +54,9 @@ while 0 == 0:
         wordle_simulation = WordleSimulation(answer=answer, wordle_game=wordle_game, wordle_analyzer=wordle_analyzer, wordle_predictors=wordle_predictors)
         current_guess = ""
 
-        json_values["answer"] = answer
+        json_values["answer"] = answer.lower()
         for i in range(0, 6):
-            current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess)
+            current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess, starting_word=starting_word)
 
             json_values["guess"] = current_guess
             json_values["guess_count"] = i + 1
