@@ -32,6 +32,7 @@ class WordleSimulation:
             else:
                 current_guess = self.guess(json=json, current_guess=current_guess)
 
+            json_result["settings_id"] = hashlib.md5(str(json_result).encode(encoding="utf-8")).hexdigest()
             json_result["answer"] = self.answer.lower()
             json_result["guess"] = current_guess
             json_result["guess_count"] = i + 1
