@@ -28,37 +28,39 @@ table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTG
 
 c = 0
 
+wordle_analyzer = Analyzer(words=words_historical)
+
 while 0 == 0:
-    answer = random.choice(words_historical).lower()
-    print(answer)
-    wordle_game = Game(answer=answer)
-    wordle_analyzer = Analyzer(words=words_historical)
-    wordle_predictors = PredictorCollection(words=words_dictionary)
-    wordle_simulation = WordleSimulation(answer=answer, wordle_game=wordle_game, wordle_analyzer=wordle_analyzer, wordle_predictors=wordle_predictors)
-    current_guess = ""
-
-    # Randomization
-    frequency_perc = random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
-    json_values = {
-        "frequency_perc": frequency_perc,
-        "position_perc": 1 - frequency_perc,
-        "nonnoun_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1]),
-        "plural_perc": random.choice([0.25, 0.5, 0.75, 0.8, 0.9, 1])
-    }
-
-    json_values["answer"] = answer
-    for i in range(0, 6):
-        current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess)
-
-        json_values["guess"] = current_guess
-        json_values["guess_count"] = i + 1
-        json_values["_id"] = hashlib.md5(str(json_values).encode(encoding="utf-8")).hexdigest()
-        json_values["_at"] = str(datetime.utcnow())
-        print(json.dumps(json_values))
-        table.upsert(object=[json_values])
-        if current_guess == wordle_game.answer:
+    json_values_used = []
+    # Loop until we find a permutation that hasn't been used yet.
+    while 0 == 0:
+        frequency_perc = random.choice([0, 0.25, 0.5, 0.75, 1])
+        json_values = {
+            "frequency_perc": frequency_perc,
+            "position_perc": 1 - frequency_perc,
+            "nonnoun_perc": random.choice([0.01, 0.1, 0.5, 1]),
+            "plural_perc": random.choice([0.01, 0.1, 0.5, 1])
+        }
+        if json_values not in json_values_used:
+            json_values_used.append(json_values)
             break
 
-    c = c + 1
-    #if c > 10:
-    #   break
+    # Traverse entire historical answer list using one randomization profile.
+    for answer in words_historical:
+        wordle_game = Game(answer=answer)
+        wordle_predictors = PredictorCollection(words=words_dictionary)
+        wordle_simulation = WordleSimulation(answer=answer, wordle_game=wordle_game, wordle_analyzer=wordle_analyzer, wordle_predictors=wordle_predictors)
+        current_guess = ""
+
+        json_values["answer"] = answer
+        for i in range(0, 6):
+            current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess)
+
+            json_values["guess"] = current_guess
+            json_values["guess_count"] = i + 1
+            json_values["_id"] = hashlib.md5(str(json_values).encode(encoding="utf-8")).hexdigest()
+            json_values["_at"] = str(datetime.utcnow())
+            print(json.dumps(json_values))
+            table.upsert(object=[json_values])
+            if current_guess == wordle_game.answer:
+                break

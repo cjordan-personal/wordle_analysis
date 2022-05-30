@@ -1,6 +1,4 @@
-from analyzer import Analyzer, top_result
-from game import Game
-from predictor import PredictorCollection
+from analyzer import top_result
 
 class WordleSimulation:
     def __init__(self, answer, wordle_game, wordle_analyzer, wordle_predictors):
