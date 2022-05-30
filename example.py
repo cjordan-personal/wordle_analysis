@@ -6,8 +6,8 @@ import random
 from simulation import WordleSimulation
 from wordlist import WordList
 
-words_training_set = WordList(type="training_set")
-words_dictionary = WordList(type="dictionary")
+words_training_set = WordList(type="training_set").words
+words_dictionary = WordList(type="dictionary").words
 
 table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTGRES_URL_MONTECARLO"])
 
