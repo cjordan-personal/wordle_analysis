@@ -50,17 +50,15 @@ while 0 == 0:
     for i in range(0, 6):
         current_guess = wordle_simulation.guess(json=json_values, current_guess=current_guess)
 
-        json_values["_at"] = str(datetime.utcnow())
         json_values["guess"] = current_guess
-        json_values["_id"] = hashlib.md5((json_values["_at"] +
-                                          json_values["guess"] +
-                                          json_values["answer"]).encode(encoding="utf-8")).hexdigest()
         json_values["guess_count"] = i + 1
+        json_values["_id"] = hashlib.md5(str(json_values).encode(encoding="utf-8")).hexdigest()
+        json_values["_at"] = str(datetime.utcnow())
         print(json.dumps(json_values))
         table.upsert(object=[json_values])
         if current_guess == wordle_game.answer:
             break
 
     c = c + 1
-    #if c > 5:
+    #if c > 10:
     #   break
