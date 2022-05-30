@@ -39,5 +39,5 @@ class WordleSimulation:
             json_result["_at"] = str(datetime.utcnow())
 
             json_results.append(json_result)
-            if current_guess == self.answer:
+            if current_guess == self.answer or i == 5:
                 return(json_results)
