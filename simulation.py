@@ -28,7 +28,7 @@ class WordleSimulation:
             json_result = json.copy()
 
             if i == 0:
-                current_guess = starting_word
+                current_guess = starting_word.lower()
             else:
                 current_guess = self.guess(json=json, current_guess=current_guess)
 

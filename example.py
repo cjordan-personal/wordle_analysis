@@ -1,28 +1,17 @@
 from analyzer import Analyzer, top_result
-import csv
 import json
 import os
 from postgres_engine import Table
 import random
 from simulation import WordleSimulation
+from wordlist import WordList
 
-def load_word_file(file_name):
-    words_buffer = []
-    with open(file_name, "r") as f:
-        csv_reader = csv.reader(f)
-        for row in csv_reader:
-            words_buffer.append(row[0])
-    f.close()
-    return(words_buffer)
-
-historical_file = "_input/20220528_previous_results.csv"
-words_historical = load_word_file(file_name=historical_file)
-dictionary_file = "_input/dictionary.csv"
-words_dictionary = load_word_file(file_name=dictionary_file)
+words_training_set = WordList(type="training_set")
+words_dictionary = WordList(type="dictionary")
 
 table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTGRES_URL_MONTECARLO"])
 
-wordle_analyzer = Analyzer(words=words_historical)
+wordle_analyzer = Analyzer(words=words_training_set)
 
 while 0 == 0:
     json_values_used = []
@@ -45,7 +34,7 @@ while 0 == 0:
     print(json.dumps(json_values, indent=4))
 
     # Traverse entire historical answer list using one randomization profile.
-    for answer in words_historical:
+    for answer in words_training_set:
         wordle_simulation = WordleSimulation(answer=answer, words=words_dictionary, wordle_analyzer=wordle_analyzer)
         current_guess = ""
 
