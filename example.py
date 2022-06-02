@@ -1,4 +1,5 @@
 from analyzer import Analyzer, top_result
+import hashlib
 import json
 import os
 from postgres_engine import Table
@@ -14,10 +15,10 @@ table = Table(name="wordle", primary_key="_id", connection_url=os.environ["POSTG
 wordle_analyzer = Analyzer(words=words_training_set)
 
 while 0 == 0:
-    json_values_used = []
     # Loop until we find a permutation that hasn't been used yet.
     # Not the most efficient, but will be most flexible as more parameters are added.
     while 0 == 0:
+        used_settings_ids = table.column_to_distinct_list(col="settings_id")
         frequency_perc = random.choice([0, 0.25, 0.5, 0.75, 1])
         json_values = {
             "frequency_perc": frequency_perc,
@@ -25,8 +26,8 @@ while 0 == 0:
             "nonnoun_perc": random.choice([0.01, 0.1, 0.5, 1]),
             "plural_perc": random.choice([0.01, 0.1, 0.5, 1])
         }
-        if json_values not in json_values_used:
-            json_values_used.append(json_values)
+        settings_id = hashlib.md5(str(json_values).encode(encoding="utf-8")).hexdigest()
+        if settings_id not in used_settings_ids:
             break
 
     starting_word = top_result(wordle_analyzer.score_words(words=words_dictionary, json=json_values))
