@@ -17,8 +17,8 @@ wordle_analyzer = Analyzer(words=words_training_set)
 while 0 == 0:
     # Loop until we find a permutation that hasn't been used yet.
     # Not the most efficient, but will be most flexible as more parameters are added.
+    used_settings_ids = table.column_to_distinct_list(col="settings_id")
     while 0 == 0:
-        used_settings_ids = table.column_to_distinct_list(col="settings_id")
         frequency_perc = random.choice([0, 0.25, 0.5, 0.75, 1])
         json_values = {
             "frequency_perc": frequency_perc,
