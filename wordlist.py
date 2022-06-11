@@ -11,6 +11,8 @@ def load_word_file(file_name):
     return(words_buffer)
 
 def slice_by_popularity(words, limit):
+    if limit == 0:
+        limit = len(words)
     popularity = {}
 
     for word in words:
